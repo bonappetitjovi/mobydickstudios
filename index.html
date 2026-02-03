@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/jpeg" href="munchy.jpg">
+    <title>MOBY DICK STUDIOS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #0ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #0ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10001;
+            transition: all 0.15s ease;
+        }
+
+        /* Canvas Background */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Scanlines Effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 255, 0.03) 0px,
+                transparent 1px,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 3px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            animation: scanline-move 8s linear infinite;
+        }
+
+        @keyframes scanline-move {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .logo-3d {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float-3d 6s ease-in-out infinite;
+        }
+
+        @keyframes float-3d {
+            0%, 100% { transform: translateY(0) rotateY(0deg); }
+            25% { transform: translateY(-30px) rotateY(10deg); }
+            50% { transform: translateY(0) rotateY(0deg); }
+            75% { transform: translateY(-30px) rotateY(-10deg); }
+        }
+
+        .logo-3d img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)) 
+                    drop-shadow(0 0 80px rgba(255, 0, 200, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        .logo-3d:hover img {
+            filter: drop-shadow(0 0 60px rgba(0, 255, 255, 1)) 
+                    drop-shadow(0 0 120px rgba(255, 0, 200, 0.8));
+            transform: scale(1.1) rotateZ(5deg);
+        }
+
+        .glitch-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            animation: glitch-main 3s infinite;
+        }
+
+        @keyframes glitch-main {
+            0%, 90%, 100% { 
+                text-shadow: 
+                    0 0 20px #0ff,
+                    0 0 40px #0ff,
+                    0 0 80px #0ff,
+                    0 0 120px #f0f,
+                    3px 3px 0 #f0f,
+                    -3px -3px 0 #0ff;
+            }
+            95% {
+                text-shadow: 
+                    0 0 20px #f0f,
+                    0 0 40px #f0f,
+                    10px 0 0 #0ff,
+                    -10px 0 0 #f0f;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 3rem;
+            animation: neon-flicker 4s infinite;
+        }
+
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.7;
+            }
+        }
+
+        /* Game Cards */
+        .games-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            gap: 3rem;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 200, 0.05));
+            border: 2px solid;
+            border-image: linear-gradient(135deg, #0ff, #f0f) 1;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(0, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .game-card:hover {
+            transform: translateY(-20px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0, 255, 255, 0.3),
+                0 50px 100px rgba(255, 0, 200, 0.2),
+                inset 0 0 60px rgba(0, 255, 255, 0.1);
+            border-image: linear-gradient(135deg, #f0f, #0ff) 1;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #000 0%, #0a0a2e 100%);
+            padding: 3rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            border-bottom: 2px solid #0ff;
+        }
+
+        .munchy-icon {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #ff006e, #ff4891, #ff7bb9);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            animation: icon-pulse 2s ease-in-out infinite;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 110, 0.6),
+                0 0 60px rgba(255, 0, 110, 0.4),
+                inset 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes icon-pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .card-title {
+            flex: 1;
+        }
+
+        .card-title h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff006e, #ff4891, #0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 0.5rem;
+            animation: title-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes title-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.8)); }
+            50% { filter: drop-shadow(0 0 40px rgba(0, 255, 255, 0.8)); }
+        }
+
+        .card-genre {
+            font-size: 1.3rem;
+            color: #0ff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .card-body {
+            padding: 3rem;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .game-desc {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 3rem;
+            color: #ccc;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-box {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 200, 0.1));
+            border-left: 4px solid #0ff;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .feature-box:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 200, 0.2));
+            border-left-color: #f0f;
+            transform: translateX(10px);
+        }
+
+        .feature-box strong {
+            color: #0ff;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-container {
+            text-align: center;
+        }
+
+        .mega-button {
+            display: inline-block;
+            padding: 1.5rem 4rem;
+            background: linear-gradient(135deg, #ff006e, #ff4891);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+        }
+
+        .mega-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .mega-button:hover::before {
+            left: 100%;
+        }
+
+        .mega-button:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 110, 0.8),
+                0 0 60px rgba(255, 0, 110, 0.5);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #0ff, #0af);
+            padding: 0.8rem 2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+            animation: badge-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 1); }
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(180deg, transparent, #000);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 2px solid #0ff;
+            margin-top: 6rem;
+        }
+
+        footer p {
+            font-size: 1.1rem;
+            color: #0ff;
+            margin: 0.5rem 0;
+        }
+
+        .social-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            padding: 1rem 2rem;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #0ff;
+            color: #0ff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+        }
+
+        .social-link:hover {
+            background: #0ff;
+            color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .glitch-text { font-size: 3rem; letter-spacing: 5px; }
+            .logo-3d { width: 250px; height: 250px; }
+            .card-title h2 { font-size: 2.5rem; }
+            .card-header { flex-direction: column; text-align: center; }
+            .munchy-icon { width: 100px; height: 100px; font-size: 3rem; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+    <div class="scanlines"></div>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div class="container">
+        <section class="hero">
+            <div class="logo-3d">
+                <img src="Mobydickstudios.jpg" alt="Moby Dick Games">
+            </div>
+            <h1 class="glitch-text">MOBY DICK STUDIOS</h1>
+            <p class="subtitle">NEXT-LEVEL GAMING EXPERIENCE</p>
+        </section>
+
+        <div class="games-grid">
+            <div class="game-card">
+                <div class="status-badge">COMING SOON</div>
+                <div class="card-header">
+                    <div class="munchy-icon">🍬</div>
+                    <div class="card-title">
+                        <h2>MUNCHY</h2>
+                        <p class="card-genre">Match-3 Mayhem</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="game-desc">
+                        Enter the wild world of MUNCHY - where matching meets madness! This isn't your grandma's 
+                        match-3 game. Explosive combos, insane power-ups, and that adorable pink menace will keep 
+                        you hooked for hours. Get ready to munch, match, and dominate!
+                    </p>
+                    <div class="features-grid">
+                        <div class="feature-box">
+                            <strong>⚡ 500+ LEVELS</strong>
+                            Endless chaos awaits
+                        </div>
+                        <div class="feature-box">
+                            <strong>🌈 EPIC WORLDS</strong>
+                            Explore insane realms
+                        </div>
+                        <div class="feature-box">
+                            <strong>💥 POWER-UPS</strong>
+                            Unleash destruction
+                        </div>
+                        <div class="feature-box">
+                            <strong>🏆 COMPETE</strong>
+                            Crush your friends
+                        </div>
+                    </div>
+                    <div class="cta-container">
+                        <a href="#" class="mega-button">WISHLIST NOW</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 MOBY DICK STUDIOS</p>
+            <p>MAKING WAVES IN THE GAMING UNIVERSE</p>
+            <div class="social-grid">
+                <a href="#" class="social-link">TWITTER</a>
+                <a href="#" class="social-link">DISCORD</a>
+                <a href="#" class="social-link">INSTAGRAM</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+
+            cursor.style.transform = `translate(${cursorX - 15}px, ${cursorY - 15}px)`;
+            follower.style.transform = `translate(${followerX - 5}px, ${followerY - 5}px)`;
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = Math.random() > 0.5 ? 'rgba(0, 255, 255, 0.5)' : 'rgba(255, 0, 200, 0.5)';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Connect nearby particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(0, 255, 255, ${0.2 - distance / 500})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Interactive hover effects
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `translateY(-20px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>
